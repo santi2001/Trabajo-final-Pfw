@@ -1,39 +1,30 @@
 import React from 'react'
-// import { makeStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
+import { Link } from 'react-router-dom'
+import { AppBar, Toolbar, IconButton } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
-// import AccountCircle from '@material-ui/icons/AccountCircle'
-
-// import MenuItem from '@material-ui/core/MenuItem'
-// import Menu from '@material-ui/core/Menu'
+import { Button } from '@material-ui/core'
+import { ROUTES } from '~/views/routes'
 
 export const NavBar = () => {
-  // const [auth] = useState(false)
-  // const [anchorEl, setAnchorEl] = useState(null)
-  // // const handleChange = (event) => {
-  // //   setAuth(event.target.checked)
-  // // }
-
-  // const handleMenu = (event) => {
-  //   setAnchorEl(event.currentTarget)
-  // }
-
-  // const handleClose = () => {
-  //   setAnchorEl(null)
-  // }
-
   return (
     <AppBar position='fixed'>
       <Toolbar>
-        <IconButton size='large' edge='start' color='inherit' aria-label='menu'>
+        <IconButton edge='start' color='inherit' aria-label='menu'>
           <MenuIcon />
         </IconButton>
-        <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
+        <Link
+          to={ROUTES.ROOT}
+          style={{ flexGrow: 1, textDecoration: 'none', color: '#ffff' }}>
           nombre juego
-        </Typography>
+        </Link>
+
+        <Link
+          to={ROUTES.GAME}
+          variant='outlined'
+          color='inherit'
+          component={Button}>
+          Empezar a Jugar
+        </Link>
       </Toolbar>
     </AppBar>
   )

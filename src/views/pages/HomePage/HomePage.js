@@ -61,8 +61,8 @@ export const HomePage = () => {
             Recorrido
           </Typography>
           <Slider {...settings}>
-            {array.map((e) => (
-              <div>
+            {array.map((e, i) => (
+              <div key={i}>
                 <img src={e} alt='img' className={classes.image} />
               </div>
             ))}
