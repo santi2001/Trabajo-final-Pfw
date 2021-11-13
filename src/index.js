@@ -2,14 +2,15 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
 import { HashRouter } from 'react-router-dom'
-import { ThemeProvider } from '@mui/material/styles'
-
+import { MuiThemeProvider, CssBaseline } from '@material-ui/core'
+import { theme } from './config/theme'
 const root = (
-  <ThemeProvider>
+  <MuiThemeProvider theme={theme}>
+    <CssBaseline />
     <HashRouter>
       <App />
     </HashRouter>
-  </ThemeProvider>
+  </MuiThemeProvider>
 )
 
 ReactDOM.render(root, document.getElementById('root'))
