@@ -2,30 +2,23 @@ import React from 'react'
 import Phaser from 'phaser'
 import { IonPhaser } from '@ion-phaser/react'
 import { NavBar, Footer } from '~/views/pages/shared'
-
+import { GameOver, MainScene, Congratulation } from './components/scenes'
 export const GamePage = () => {
   const game = {
+    type: Phaser.AUTO,
+    // parent: 'game',
     width: '100%',
     height: '100%',
-    type: Phaser.AUTO,
-    scene: {
-      init: function () {
-        this.cameras.main.setBackgroundColor('#24252A')
-      },
-      create: function () {
-        this.helloWorld = this.add.text(
-          this.cameras.main.centerX,
-          this.cameras.main.centerY,
-          'Hello World',
-          {
-            font: '40px Arial',
-            fill: '#ffffff'
-          }
-        )
-        this.helloWorld.setOrigin(0.5)
-      },
-      update: function () {
-        this.helloWorld.angle += 1
+    backgroundColor: '#20add8',
+    scene: [MainScene, GameOver, Congratulation],
+    render: {
+      pixelArt: true
+    },
+    physics: {
+      default: 'arcade',
+      arcade: {
+        gravity: { y: 300 },
+        debug: false
       }
     }
   }
