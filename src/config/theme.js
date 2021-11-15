@@ -5,17 +5,17 @@ export const theme = createTheme({
     // paleta de color
     primary: {
       // modificar color
-      light: '#757ce8',
-      main: '#00bcd4',
-      dark: '#00acc1',
+      light: '#3E00FF',
+      main: '#3E00FF',
+      dark: '#3E00FF',
       contrastText: '#fff'
     },
     secondary: {
       // modificar color
-      light: '#ff7961',
-      main: '#ff9800',
-      dark: '#f57c00',
-      secondary: '#f44336'
+      light: '#AE00FB',
+      main: '#AE00FB',
+      dark: '#AE00FB',
+      contrastText: '#fff'
     },
     success: {
       light: '#80e872',

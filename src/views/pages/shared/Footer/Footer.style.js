@@ -17,7 +17,7 @@ export const useStyles = makeStyles((theme) => ({
       paddingBottom: theme.spacing()
     },
     '& a': {
-      color: theme.palette.primary.main,
+      color: '#ffff',
       fontSize: '1rem',
       textDecoration: 'none',
       fontWeight: 500

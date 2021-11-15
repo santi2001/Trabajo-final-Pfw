@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/styles'
 
 export const useStyles = makeStyles((theme) => ({
   container: {
-    backgroundColor: '#161E54'
+    backgroundColor: '#DDDDDD'
   },
   mainContainer: {
     minHeight: '75vh'

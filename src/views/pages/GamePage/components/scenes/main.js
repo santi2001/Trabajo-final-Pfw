@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import image from '~/assets/box.png'
 export class MainScene extends Phaser.Scene {
   constructor() {
     super({ key: 'game' })
@@ -6,6 +7,7 @@ export class MainScene extends Phaser.Scene {
 
   init() {
     this.block = null
+    console.log(image)
     this.box = null
     this.rockets = null
     this.groundInf = null
@@ -30,8 +32,8 @@ export class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('box', '~/assets/box.png')
-    this.load.image('block', '~/assets/block.png')
+    this.load.image('box', '../assets/box.png')
+    this.load.image('block', '../assets/block.jpg')
     this.load.image('rocket', '~/assets/rocket.png')
     this.load.image('groundbottom', '~/assets/groundBottom.png')
     this.load.image('groundtop', '~/assets/groundTop.png')
