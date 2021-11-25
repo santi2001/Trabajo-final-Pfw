@@ -15,7 +15,7 @@ export const NavBar = () => {
         <Link
           to={ROUTES.ROOT}
           style={{ flexGrow: 1, textDecoration: 'none', color: '#ffff' }}>
-          nombre juego
+          Shadow Gluttony
         </Link>
 
         <Link

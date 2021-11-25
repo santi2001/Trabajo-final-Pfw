@@ -1,11 +1,14 @@
-import { Button, Link, Typography } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
 import React from 'react'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import { ROUTES } from '~/views/routes'
-
-import view from '~/assets/view1.png'
+import { Link } from 'react-router-dom'
+import logo from '~/assets/logo.png'
+import view1 from '~/assets/view1.png'
+import view2 from '~/assets/view2.png'
+import view3 from '~/assets/view3.png'
 import { NavBar, Footer } from '~/views/pages/shared'
 import { useStyles } from './HomePage.style'
 export const HomePage = () => {
@@ -37,12 +40,7 @@ export const HomePage = () => {
       }
     ]
   }
-  const array = [
-    'https://cdn.mos.cms.futurecdn.net/7vTk57eCSapaCbb4vaNGz7.jpg',
-    view,
-    'https://s3.amazonaws.com/static.neostack.com/img/react-slick/abstract03.jpg',
-    'https://cdn.dnaindia.com/sites/default/files/styles/full/public/2021/01/14/949612-first-slide.jpg'
-  ]
+  const array = [logo, view1, view2, view3]
   return (
     <div className={classes.container}>
       <NavBar />
@@ -51,16 +49,14 @@ export const HomePage = () => {
           <div className={classes.previewImage}>
             <div className={classes.containerHeader}>
               <Typography className={classes.title} component='h5'>
-                Nombre Del Juego
+                Shadow Gluttony
               </Typography>
-              <Typography className={classes.subtitle}>
-                Alguna frase llamativa
-              </Typography>
+              <Typography className={classes.subtitle}>Alguna frase llamativa</Typography>
             </div>
           </div>
         </header>
         <div className={classes.bodyContainer}>
-          <Typography variant='h5' color='primary' style={{ marginBottom: 30 }}>
+          <Typography variant='h5' color='primary'>
             Recorrido
           </Typography>
           <Slider {...settings}>
@@ -74,7 +70,7 @@ export const HomePage = () => {
             component={Button}
             to={ROUTES.GAME}
             variant='contained'
-            color='inherit'
+            color='primary'
             className={classes.button}>
             Empezar a Jugar
           </Link>

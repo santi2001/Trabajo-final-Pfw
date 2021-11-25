@@ -1,12 +1,16 @@
 import Phaser from 'phaser'
 import { jugador, bullet } from './class'
-
+import store from '~/state/store'
+import { loadLevel } from '~/state/modules/level'
+import { updatePlayer } from '~/state/modules/player'
 export class MainScene extends Phaser.Scene {
   constructor() {
     super({ key: 'game' })
   }
 
   init() {
+    this.state = null
+    this.level = null
     this.block = null
     this.rockets = null
     this.groundInf = null
@@ -22,12 +26,20 @@ export class MainScene extends Phaser.Scene {
   }
 
   preload() {
+    // realizar el dispatch de la accion
+
+    const state = store.getState()
+    store.dispatch(updatePlayer(state.player.player))
+    // store.dispatch(createPlayer({ nombre: 'Jugador', id_niveles: 1, energia: 100 }))
+    // store.dispatch(loadPlayer())
+    store.dispatch(loadLevel(1))
+    store.dispatch(updatePlayer({ idJugadores: 2, nombre: 'Barri', id_niveles: 3, energia: 30 }))
     this.load.spritesheet('sprite-shadow', '../assets/sprite-shadow.png', {
       frameWidth: 50,
       frameHeight: 50
     })
 
-    this.load.image('block', '../assets/block.png')
+    this.load.image('block', './assets/block.png')
     this.load.image('rocket', '../assets/rocket.png')
     this.load.image('groundbottom', '../assets/groundBottom.png')
     this.load.image('groundtop', '../assets/groundTop.png')
@@ -36,10 +48,7 @@ export class MainScene extends Phaser.Scene {
 
   create() {
     this.block = this.physics.add.image(800, 450, 'block').setImmovable(true)
-    this.groundTop = this.physics.add
-      .image(0, 0, 'groundtop')
-      .setOrigin(0, 0)
-      .setImmovable(true)
+    this.groundTop = this.physics.add.image(0, 0, 'groundtop').setOrigin(0, 0).setImmovable(true)
     this.groundInf = this.physics.add
       .image(0, 600, 'groundbottom')
       .setOrigin(0, 1)
@@ -72,22 +81,15 @@ export class MainScene extends Phaser.Scene {
     //COLISIONES
     this.physics.add.collider(this.player, this.groundInf)
     this.physics.add.collider(this.block, this.groundInf)
-    this.physics.add.collider(
-      this.player,
-      this.block,
-      this.hacerDaño,
-      null,
-      this
-    )
-    this.physics.add.collider(
-      this.bulletsGroup,
-      this.block,
-      this.disparando,
-      null,
-      this
-    )
+    this.physics.add.collider(this.player, this.block, this.hacerDaño, null, this)
+    this.physics.add.collider(this.bulletsGroup, this.block, this.disparando, null, this)
     this.player.body.setCollideWorldBounds()
     this.block.setVelocityX(-100)
+
+    // de esta forma traes las variables de redux
+
+    //pones el nombre la constante. nombre del reducer. nombre del objeto al que quieres acceder
+    // console.log(state.player.player)
   }
 
   update() {

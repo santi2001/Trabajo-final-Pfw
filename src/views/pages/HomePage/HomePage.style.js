@@ -5,7 +5,10 @@ export const useStyles = makeStyles((theme) => ({
     backgroundColor: '#DDDDDD'
   },
   mainContainer: {
-    minHeight: '75vh'
+    minHeight: '75vh',
+    '& h5': {
+      marginBottom: 30
+    }
   },
   containerHeader: {
     width: '50%',
