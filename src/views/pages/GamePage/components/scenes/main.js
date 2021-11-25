@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
-import image from '~/assets/box.png'
+import { jugador, bullet } from './class'
+
 export class MainScene extends Phaser.Scene {
   constructor() {
     super({ key: 'game' })
@@ -7,42 +8,34 @@ export class MainScene extends Phaser.Scene {
 
   init() {
     this.block = null
-    console.log(image)
-    this.box = null
     this.rockets = null
     this.groundInf = null
-    this.groundTop = null
-    this.jumpCount = 0
-    this.balas = null
-    // this.timeBalas = 0;
     this.counterLife = 100
     this.counterLifeText = ''
-    // this.completed = true;
-    // this.blocks = null;
-    // this.spikes1 = null;
-    // this.blocks1 = null;
     this.enemyLife = 100
     this.enemyText = ''
     this.damegeEnemy = 30
     this.damageRocket = 20
     this.damagePlayer = 40
     this.explode = null
-    this.band = true
     this.mov = true
   }
 
   preload() {
-    this.load.image('box', '../assets/box.png')
-    this.load.image('block', '../assets/block.jpg')
-    this.load.image('rocket', '~/assets/rocket.png')
-    this.load.image('groundbottom', '~/assets/groundBottom.png')
-    this.load.image('groundtop', '~/assets/groundTop.png')
+    this.load.spritesheet('sprite-shadow', '../assets/sprite-shadow.png', {
+      frameWidth: 50,
+      frameHeight: 50
+    })
+
+    this.load.image('block', '../assets/block.png')
+    this.load.image('rocket', '../assets/rocket.png')
+    this.load.image('groundbottom', '../assets/groundBottom.png')
+    this.load.image('groundtop', '../assets/groundTop.png')
     this.load.audio('explosion', './sounds/explosion.mp3')
   }
 
   create() {
-    this.box = this.physics.add.sprite(400, 450, 'box')
-    this.block = this.physics.add.image(500, 450, 'block').setImmovable(true)
+    this.block = this.physics.add.image(800, 450, 'block').setImmovable(true)
     this.groundTop = this.physics.add
       .image(0, 0, 'groundtop')
       .setOrigin(0, 0)
@@ -51,97 +44,98 @@ export class MainScene extends Phaser.Scene {
       .image(0, 600, 'groundbottom')
       .setOrigin(0, 1)
       .setImmovable(true)
-    this.balas = this.physics.add.sprite('rocket')
+    //OBJETOS
+    this.player = new jugador(this, 400, 440, 'sprite-shadow')
 
+    this.bulletsGroup = new bullet(this.physics.world, this)
+    //INGRESANDO LOS TEXTOS
     this.counterLifeText = this.add.text(
       this.sys.game.canvas.width / 2 - 80,
       0,
-      'Energía: ' + this.counterLife,
+      `Energía: ${this.counterLife}`,
       { fontStyle: 'strong', font: '25px Arial', fill: '#6368BC' }
     )
-    this.counterLifeText.setDepth(1)
-
+    this.counterLifeText.setDepth(1) //profundidad (?)
     this.enemyText = this.add.text(
       this.sys.game.canvas.width / 2 + 80,
       0,
       'Energía: ' + this.enemyLife,
       { fontStyle: 'strong', font: '25px Arial', fill: '#6368BC' }
     )
-
-    this.groundInf.body.allowGravity = false
-    this.groundTop.body.allowGravity = false
-
-    this.box.body.gravity.y = 1000
-
-    this.physics.add.collider(this.box, this.groundInf)
-    this.physics.add.collider(this.box, this.groundTop)
-
+    //GRAVEDAD DEL JUEGO
+    this.groundInf.body.allowGravity = false // <- posicion estatica, no le afecta la gravedad
+    //<- gravedad a la q el cuerpo es afectada
+    this.player.body.gravity.y = 1000
+    //se crea los input del juego, siendo: las flechas, espacio y el shift
     this.cursors = this.input.keyboard.createCursorKeys()
 
+    //COLISIONES
+    this.physics.add.collider(this.player, this.groundInf)
     this.physics.add.collider(this.block, this.groundInf)
-    this.physics.add.collider(this.box, this.block, this.hacerDaño())
-    this.physics.add.collider(this.block, this.box, this.recibirDaño())
-    this.physics.add.collider(this.balas, this.block, this.disparando())
-
-    this.box.body.setCollideWorldBounds()
-
+    this.physics.add.collider(
+      this.player,
+      this.block,
+      this.hacerDaño,
+      null,
+      this
+    )
+    this.physics.add.collider(
+      this.bulletsGroup,
+      this.block,
+      this.disparando,
+      null,
+      this
+    )
+    this.player.body.setCollideWorldBounds()
     this.block.setVelocityX(-100)
-
-    this.balas = this.physics.add.group()
   }
 
   update() {
     if (this.cursors.left.isDown) {
-      // this.block.setVelocityX(200);
       this.mov = false
-      this.box.x -= 5
-      // this.box.setVelocityX(-200);
+      this.player.setVelocityX(-160).anims.play('left', true)
       //DISPARAR
       if (this.input.keyboard.checkDown(this.cursors.space, 250)) {
+        this.player.anims.play('attak-right', true)
         this.disparar(false)
       }
-      if (this.cursors.up.isDown) {
+      if (this.cursors.up.isDown && this.cursors.left.isDown) {
         this.jump()
+        if (this.input.keyboard.checkDown(this.cursors.space, 250)) {
+          this.player.anims.play('attak-right', true)
+          this.disparar(false)
+        }
       }
     } else if (this.cursors.right.isDown) {
-      // this.block.setVelocityX(-200);
       this.mov = true
-      // this.box.setVelocityX(200);
-      this.box.x += 5
+      this.player.setVelocityX(160).anims.play('right', true)
       //DISPARAR
       if (this.input.keyboard.checkDown(this.cursors.space, 250)) {
+        this.player.anims.play('attak-right', true)
         this.disparar()
       }
-      if (this.cursors.up.isDown) {
+      if (this.cursors.up.isDown && this.cursors.right.isDown) {
         this.jump()
+        if (this.input.keyboard.checkDown(this.cursors.space, 250)) {
+          this.player.anims.play('attak-right', true)
+          this.disparar()
+        }
       }
     } else if (this.cursors.up.isDown) {
       this.jump()
-    } else if (this.cursors.shift.isDown) {
-      this.box.body.stop()
-      this.block.setVelocityX(0)
+    } else if (this.mov) {
+      this.player.setVelocityX(0).anims.play('turn-right', true)
+      if (this.input.keyboard.checkDown(this.cursors.space, 250)) {
+        this.player.anims.play('attak-right')
+        this.disparar(false)
+      }
+    } else {
+      this.player.setVelocityX(0).anims.play('turn-left', true)
+      if (this.input.keyboard.checkDown(this.cursors.space, 250)) {
+        this.player.anims.play('attak-left')
+        this.disparar()
+      }
     }
-
-    if (this.box.body.touching.down) {
-      this.jumpCount = 0
-    }
-
-    //movimiento de 1 enemigo
-    // if(this.block.x < 450 && this.band == true){
-    //     this.block.x += 1;
-    // }else{
-    //     if(this.block.x == 450){
-    //         this.band = false;
-    //     }
-    // }
-    // if(this.block.x > 300 && this.band == false){
-    //     this.block.x -= 1;
-    // }else{
-    //     if(this.block.x == 300){
-    //         this.band = true;
-    //     }
-    // }
-    //FIN
 
     if (this.input.keyboard.checkDown(this.cursors.space, 250)) {
       this.disparar()
@@ -149,120 +143,64 @@ export class MainScene extends Phaser.Scene {
   }
 
   jump(e = -400) {
-    if (this.jumpCount >= 1) {
+    if (this.player.body.touching.down && this.cursors.up.isDown) {
+      this.player.setVelocityY(e)
+    } else {
       return
     }
-
-    this.box.body.velocity.y = e
-
-    this.jumpCount++
   }
 
   hacerDaño() {
     //MATAR ENEMIGO SALTANDO POR ENCIMA
     if (this.block.body.touching.up) {
-      this.box.body.velocity.y = -300
-      if (this.jumpCount <= 1) {
-        this.counterLife += 20
-        this.counterLifeText.setText('Energia: ' + this.counterLife)
-        this.enemyLife -= 40
-        this.enemyText.setText('Energia: ' + this.enemyLife)
-      } else {
-        return
-      }
-      if (this.enemyLife <= 0) {
-        this.block.destroy(true)
-        this.enemyText.setVisible(false)
-      }
+      this.player.setVelocityY(-300)
+      this.counterLife += 20
+      this.counterLifeText.setText(`Energia: ${this.counterLife}`)
+      this.enemyLife -= 40
+      this.enemyText.setText(`Energia: ${this.enemyLife}`)
     }
 
-    //Disparando a un enemigo
-    // if(this.balas != undefined){
-    //     console.log(this.balas.body.touching.right && this.block.body.touching.left);
-    //     if(this.balas.body.touching.right && this.block.body.touching.left){
-    //     // if (this.input.keyboard.checkDown(this.cursors.space, 250)) {
-    //         this.counterLife += 20;
-    //         this.counterLifeText.setText('Energia: ' + this.counterLife);
-    //         this.enemyLife -= 30;
-    //         this.enemyText.setText('Energia: ' + this.enemyLife);
-    //     // }
-    //     }else if(this.balas.touching.left && this.block.body.touching.right){
-    //         console.log(this.balas.touching.left && this.block.body.touching.right);
-    //         this.counterLife += 20;
-    //         this.counterLifeText.setText('Energia: ' + this.counterLife);
-    //         this.enemyLife -= 30;
-    //         this.enemyText.setText('Energia: ' + this.enemyLife);
-    //     }
-    // }
-  }
-
-  recibirDaño() {
     if (this.block.body.touching.left || this.block.body.touching.right) {
-      if (this.box.x > this.block.x) {
-        console.log(this.box.x > this.block.x)
-        this.box.x += 60
+      if (this.player.x > this.block.x) {
+        this.player.x += 60
         this.counterLife -= this.damegeEnemy
         this.counterLifeText.setText('Energia: ' + this.counterLife)
-      } else if (this.box.x < this.block.x) {
-        this.box.x -= 60
+      } else if (this.player.x < this.block.x) {
+        this.player.x -= 60
         this.counterLife -= this.damegeEnemy
         this.counterLifeText.setText('Energia: ' + this.counterLife)
       }
+      this.endGame()
     }
-    // this.box.x += 60;
-    // this.counterLife -= this.damegeEnemy;
-    // this.counterLifeText.setText('Energia: ' + this.counterLife);
-    // this.endGame();
+    if (this.enemyLife <= 0) {
+      this.block.y = 800
+      this.enemyText.setVisible(false)
+    }
   }
 
   disparando() {
-    this.balas.setVisible(false)
-    this.counterLife += 20
-    this.counterLifeText.setText('Energia: ' + this.counterLife)
-    this.enemyLife -= 30
-    this.enemyText.setText('Energia: ' + this.enemyLife)
+    if (this.block.visible) {
+      this.counterLife += 20
+      this.counterLifeText.setText('Energia: ' + this.counterLife)
+      this.enemyLife -= 30
+      this.enemyText.setText('Energia: ' + this.enemyLife)
+    }
+    this.bulletsGroup.setVisible(false)
+    if (this.enemyLife <= 0) {
+      this.block.y = 800
+      console.log(this.block.active)
+      this.enemyText.setVisible(false)
+    }
   }
 
   disparar() {
     if (this.mov === true) {
-      // console.log(this.balas);
-      // this.balas.enableBody = true;
-      // this.balas.physicsBodyType = Phaser.Physics.Arcade;
-      // this.balas.createMultiple(20, 'rocket');
-      // console.log(this.balas);
-      // this.balas.setAll('anchor.x', 0.5);
-      // this.balas.setAll('anchor.y', 1);
-      // this.balas.outOFBoundsKill(true);
-      // this.balas.checkWorldBounds(true);
-      // var bala;
-      // var bala = this.create(this.box.x, this.box.y, 'rocket');
-      // if (bala) {
-      //     bala.setActive(true)
-      //         .setVisible(true)
-      //         .setDepth(2)
-      //         .body.velocity.y = -200;
-      // }
-      // bala.outOfBoundsKill = true;
-      // this.shotSound.play();
-      // var roc = this.physics.add.sprite(this.box.x+30, this.box.y, 'rocket');
-      let roc = this.balas.create(this.box.x + 30, this.box.y, 'rocket')
-      if (roc) {
-        roc.setActive(true).setVisible(true).setVelocityX(200)
-        // .body.velocity.x = 500;
-      }
-      // roc.outOfBoundsKill = true;
-
+      this.bulletsGroup.newBullet(true)
       this.counterLife -= 15
       this.counterLifeText.setText('Energía: ' + this.counterLife)
       this.endGame()
     } else {
-      let roc = this.balas.create(this.box.x - 30, this.box.y, 'rocket')
-      if (roc) {
-        roc.setActive(true).setVisible(true).setVelocityX(-200)
-        // .body.velocity.x = -500;
-      }
-      roc.outOfBoundsKill = true
-
+      this.bulletsGroup.newBullet(false)
       this.counterLife -= 15
       this.counterLifeText.setText('Energía: ' + this.counterLife)
       this.endGame()
@@ -273,7 +211,6 @@ export class MainScene extends Phaser.Scene {
     if (this.counterLife <= 0) {
       this.scene.start('gameover')
     }
-    // this.explode.play();
   }
 
   congrats() {

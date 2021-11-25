@@ -3,6 +3,9 @@ const defaultTheme = createTheme()
 export const theme = createTheme({
   palette: {
     // paleta de color
+    background: {
+      default: '#32C1CD'
+    },
     primary: {
       // modificar color
       light: '#3E00FF',

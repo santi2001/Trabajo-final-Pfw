@@ -1,8 +1,11 @@
-import { Typography } from '@material-ui/core'
+import { Button, Link, Typography } from '@material-ui/core'
 import React from 'react'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
+import { ROUTES } from '~/views/routes'
+
+import view from '~/assets/view1.png'
 import { NavBar, Footer } from '~/views/pages/shared'
 import { useStyles } from './HomePage.style'
 export const HomePage = () => {
@@ -36,7 +39,7 @@ export const HomePage = () => {
   }
   const array = [
     'https://cdn.mos.cms.futurecdn.net/7vTk57eCSapaCbb4vaNGz7.jpg',
-    'https://m.media-amazon.com/images/I/812CrerASqL._AC_SX466_.jpg',
+    view,
     'https://s3.amazonaws.com/static.neostack.com/img/react-slick/abstract03.jpg',
     'https://cdn.dnaindia.com/sites/default/files/styles/full/public/2021/01/14/949612-first-slide.jpg'
   ]
@@ -67,6 +70,14 @@ export const HomePage = () => {
               </div>
             ))}
           </Slider>
+          <Link
+            component={Button}
+            to={ROUTES.GAME}
+            variant='contained'
+            color='inherit'
+            className={classes.button}>
+            Empezar a Jugar
+          </Link>
         </div>
       </div>
       <Footer />

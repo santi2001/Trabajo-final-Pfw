@@ -50,5 +50,13 @@ export const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('lg')]: {
       width: '90%'
     }
+  },
+  button: {
+    marginTop: theme.spacing(5),
+    textDecoration: 'none',
+    backgroundColor: theme.palette.primary.main,
+    ' & span': {
+      color: '#ffff'
+    }
   }
 }))

@@ -1,13 +1,14 @@
 import React from 'react'
 import Phaser from 'phaser'
-// import { IonPhaser } from '@ion-phaser/core'
+
 import { IonPhaser } from '@ion-phaser/react'
 import { NavBar, Footer } from '~/views/pages/shared'
 import { GameOver, MainScene, Congratulation } from './components/scenes'
+import { useStyles } from './GamePage.style'
 export const GamePage = () => {
+  const classes = useStyles()
   const game = {
     type: Phaser.AUTO,
-    // parent: 'game',
     width: 800,
     height: 500,
     backgroundColor: '#20add8',
@@ -18,17 +19,18 @@ export const GamePage = () => {
     physics: {
       default: 'arcade',
       arcade: {
-        gravity: { y: 300 },
         debug: false
       }
     }
   }
 
   return (
-    <div>
+    <>
       <NavBar />
-      <IonPhaser game={game} />
+      <div className={classes.container}>
+        <IonPhaser style={{ marginTop: 100 }} game={game} />
+      </div>
       <Footer />
-    </div>
+    </>
   )
 }
