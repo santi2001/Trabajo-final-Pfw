@@ -1,9 +1,9 @@
-import { RestartButton } from './sharedComponents'
 import Phaser from 'phaser'
-export class GameOver extends Phaser.Scene {
+import { PauseButton } from './sharedComponents'
+export class Pause extends Phaser.Scene {
   constructor() {
     super({ key: 'gameover' })
-    this.restartButton = new RestartButton(this)
+    this.restartButton = new PauseButton(this)
   }
 
   preload() {

@@ -10,7 +10,7 @@ export const useStyles = makeStyles((theme) => ({
     margin: '100px auto',
     width: '60%',
     [theme.breakpoints.up('md')]: {
-      width: 800
+      width: 1200
     }
   }
 }))

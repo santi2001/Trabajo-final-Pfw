@@ -62,6 +62,7 @@ export const loadPlayer = (id) => async (dispatch) => {
 export const createPlayer = (player) => async (dispatch) => {
   try {
     dispatch(createPlayerAttempt())
+    console.log(player)
     const playerProxy = new PlayerProxy()
     const data = await playerProxy.post(player)
     dispatch(createPlayerSuccess({ ...player, ...data }))
@@ -76,6 +77,7 @@ export const updatePlayer = (player) => async (dispatch) => {
     dispatch(updatePlayerAttempt())
     const playerProxy = new PlayerProxy()
     await playerProxy.put(player)
+    console.log(player)
     dispatch(updatePlayerSuccess({ ...player }))
   } catch (error) {
     dispatch(updatePlayerFailure(error))
